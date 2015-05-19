@@ -1,9 +1,9 @@
 from unittest import TestCase
-import src.hello as hello
+import src.hello as hl
 
 class TestHello(TestCase):
     def setUp(self):
-        self.hello = hello.Hello()
+        self.hello = hl.Hello()
 
     def test_hello1(self):
         self.assertEqual(3, self.hello.add(1, 2))

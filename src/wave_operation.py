@@ -1,10 +1,9 @@
-
 import wave
 import numpy as np
 
-class WaveOperation:
-    """
-    wave音源を操作する
+
+class WaveOperation(object):
+    """ WAVE音源の処理を行う操作クラス
     """
 
     def __init__(self, file_name):
@@ -12,41 +11,51 @@ class WaveOperation:
         :param file_name: ファイル名
         """
         self.file_name = file_name
-        self.read = wave.open(self.file_name, "rb")
-
-    def __del__(self):
-        self.read.close()
 
     def print(self):
+        """ 各種情報の出力
         """
-        各種情報の出力
+        with self.__open_read() as read:
+            print("Params : ", read.getparams())
+            print('Channel num : ', read.getnchannels())
+            print("Sample size : ", read.getsampwidth())
+            print("Sampling rate : ", read.getframerate())
+            print("Frame num : ", read.getnframes())
+            print("Sec : ", float(read.getnframes()) / read.getframerate())
+
+    def get_frames(self):
+        """ フレーム数を返す
+        :return: フレーム数
         """
-        print("Prams : ", self.read.getparams())
-        print('Channel num : ', self.read.getnchannels())
-        print("Sample size : ", self.read.getsampwidth())
-        print("Sampling rate : ", self.read.getframerate())
-        print("Frame num : ", self.read.getnframes())
-        print("Sec : ", float(self.read.getnframes()) / self.read.getframerate())
+        with self.__open_read() as read:
+            return read.getnframes()
 
     def get_2ch(self):
+        """ 2ch信号を数値リストで取得する
+        :return 2ch信号
         """
-        2ch信号を取得する
-        :return
-        """
-        if self.read.getnchannels() != 2:
-            raise ValueError("No 2ch Wave!")
+        with self.__open_read() as read:
+            if read.getnchannels() != 2:
+                raise ValueError("No 2ch Wave!")
 
         data = self.get_1ch()
+        print(len(data))
         left = data[0::2]
         right = data[1::2]
         return left, right
 
     def get_1ch(self):
+        """ 音源を数値リストで取得する
+        :return 2ch信号
         """
-        音源を取得する
-        """
+        with self.__open_read() as read:
+            data = read.readframes(read.getnframes())
+            data = np.frombuffer(data, dtype="int16")
+            return data
 
-        data = self.read.readframes(self.read.getnframes())
-        data = np.frombuffer(data, dtype="int16")
-        return data
+    def __open_read(self):
+        """ waveファイルオープン
+        :return
+        """
+        return wave.open(self.file_name, "rb")
 
