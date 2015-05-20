@@ -2,7 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import wave_operation as waveope
+import wave_operator as waveope
 import fft_operation as fftope
 
 def plot(data):
@@ -14,8 +14,8 @@ def plot(data):
 if __name__ == '__main__':
     filename = "../data/sample.wav"
 
-    wave = waveope.WaveOperation(filename)
-    wave.print()
+    wave = waveope.WaveOperator(filename)
+    wave.prints()
     left, right = wave.get_2ch()
 
     num = 256

@@ -1,24 +1,24 @@
 from unittest import TestCase
-import sys
 
-sys.path.append("../src")
+from wave_operator import WaveOperator
 
-import wave_operation as waveope
-
-
-class TestWaveOperation(TestCase):
+class TestWaveOperator(TestCase):
     def setUp(self):
         filename = "data/sample.wav"
-        self.waveope = waveope.WaveOperation(filename)
+        self.waveope = WaveOperator(filename)
 
-    def test_print(self):
-        self.waveope.print()
-        # a, b = waveope.get_2ch()
-        # print(data[0])
+    def test_prints(self):
+        self.waveope.prints()
+        self.assertTrue(True)
+
+    def test_get_frames(self):
+        self.assertEqual(220500, self.waveope.get_frames())
+
+    def test_get_2ch(self):
+        a, b = self.waveope.get_2ch()
 
         # a, b = self.f()
         left, right = self.waveope.get_2ch()
-        print(left, right)
 
         self.assertEqual(-11723, left[len(left) - 1])
         self.assertEqual(self.waveope.get_frames(), len(left))

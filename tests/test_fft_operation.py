@@ -1,10 +1,10 @@
 from unittest import TestCase
 import sys
+import math
+import matplotlib.pyplot as plt
 
 sys.path.append("../src")
 
-import math
-import matplotlib.pyplot as plt
 import fft_operation as fftope
 
 
@@ -24,5 +24,5 @@ class TestFftOperation(TestCase):
         energy = [math.sqrt(data.real * data.real + data.imag * data.imag) for data in fft]
         self.assertEqual(4714873.6723589, energy[23])
 
-        # plt.plot(x, energy)
-        # plt.show()
+        plt.plot(x, energy)
+        plt.show()

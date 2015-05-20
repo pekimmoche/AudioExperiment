@@ -1,5 +1,6 @@
 import math
 
+SAMPLING_FREQ = 44100 # サンプリング周波数
 
 class WaveGenerator(object):
     """ 波形生成オブジェクト
@@ -13,10 +14,8 @@ class WaveGenerator(object):
         :param num: 点数
         :return: 正弦波
         """
-
-        # 誤差を考慮して、44100は最後に割る必要がある
         omega = 2 * math.pi * freq
-        return [amp * math.sin(omega * n / 44100) for n in range(num)]
+        return [amp * math.sin(omega * n / SAMPLING_FREQ) for n in range(num)]
 
     @staticmethod
     def sin_with_theta(amp, freq, theta, num):
@@ -28,4 +27,4 @@ class WaveGenerator(object):
         :return: 正弦波
         """
         omega = 2 * math.pi * freq
-        return [amp * math.sin(omega * n / 44100 + theta) for n in range(num)]
+        return [amp * math.sin(omega * n / SAMPLING_FREQ + theta) for n in range(num)]
