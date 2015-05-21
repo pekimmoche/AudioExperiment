@@ -1,9 +1,5 @@
 from unittest import TestCase
-import sys
 import math
-import matplotlib.pyplot as plt
-
-sys.path.append("../src")
 
 import fft_operation as fftope
 
@@ -23,6 +19,3 @@ class TestFftOperation(TestCase):
         # 虚数も含むよ
         energy = [math.sqrt(data.real * data.real + data.imag * data.imag) for data in fft]
         self.assertEqual(4714873.6723589, energy[23])
-
-        plt.plot(x, energy)
-        plt.show()

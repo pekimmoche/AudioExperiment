@@ -1,32 +1,35 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
-import matplotlib.pyplot as plt
-import wave_operator as waveope
-import fft_operation as fftope
-
-def plot(data):
-    x = np.arange(0, len(data), 1)
-    y = data
-    plt.plot(x, y)
-    plt.show()
+from wave_manipulator_by_fft import WaveManipulatorByFft
 
 if __name__ == '__main__':
-    filename = "../data/sample.wav"
 
-    wave = waveope.WaveOperator(filename)
-    wave.prints()
-    left, right = wave.get_2ch()
+    # 0, 初期化
+    input_filename = "../data/sample.wav"
+    output_filename = "../data/out.wav"
+    manipulator = WaveManipulatorByFft()
 
+    # 1, ファイルから読み込み
+    left, right = manipulator.read_wave(input_filename)
+
+    # 2, wave をフレームごとに切り取ってループ
     num = 256
     data = left[:num]
 
-    ## 音波形の出力
-    plot(data)
+    # 3, FFTの処理
+    # 4, 作業
+    # 5, IFFTの処理
+    # 6, Hann窓をかける
+    # 7, 出力結果に足し算
 
-    # 正規化
-    normal_data = data / 32768.0
-    plot(normal_data[:num])
 
-    # fftope = fftope.FftOperation(length, length)
+    # for i in range(1000):
+    #     energy_spectrum = FftOperation.generate_energy_spectrum(data, num)
+    # end = time.time()
+
+    # 8, 出力結果をwaveに出力
+    manipulator.write_2ch_wave(output_filename, left, right)
+
+
+
 

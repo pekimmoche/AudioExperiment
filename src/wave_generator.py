@@ -7,24 +7,15 @@ class WaveGenerator(object):
     """
 
     @staticmethod
-    def sin(amp, freq, num):
-        """ 正弦波を返す。初期位相は0。
+    def sin(amp, freq, phase, num):
+        """ 正弦波を返す。
         :param amp: 振幅
         :param freq: 周波数
+        :param phase: 初期位相(°)
         :param num: 点数
         :return: 正弦波
         """
-        omega = 2 * math.pi * freq
-        return [amp * math.sin(omega * n / SAMPLING_FREQ) for n in range(num)]
 
-    @staticmethod
-    def sin_with_theta(amp, freq, theta, num):
-        """ 正弦波を返す。初期位相はtheta。
-        :param amp: 振幅
-        :param freq: 周波数
-        :param theta: 初期位相
-        :param num: 点数
-        :return: 正弦波
-        """
-        omega = 2 * math.pi * freq
+        omega = 2 * freq * math.pi
+        theta = 2 * phase / 360 * math.pi
         return [amp * math.sin(omega * n / SAMPLING_FREQ + theta) for n in range(num)]

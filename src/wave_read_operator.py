@@ -3,17 +3,17 @@ import wave
 import numpy as np
 
 
-class WaveOperator(object):
+class WaveReadOperator(object):
     """ WAVE音源の処理を行う操作オブジェクト
     """
 
-    def __init__(self, file_name):
+    def __init__(self, filename):
         """
-        :param file_name: ファイル名
+        :param filename: ファイル名
         """
-        self.file_name = file_name
+        self.filename = filename
 
-    def prints(self):
+    def print_parameters(self):
         """ 各種情報の出力
         """
         with self.__open_read() as read:
@@ -24,6 +24,14 @@ class WaveOperator(object):
             print("Frame num : ", read.getnframes())
             print("Sec : ", float(read.getnframes()) / read.getframerate())
 
+    def get_parameters(self):
+        """ 各種情報の出力
+        ex. _wave_params(nchannels=2, sampwidth=2, framerate=44100, nframes=100000, comptype='NONE',
+                         compname='not compressed')
+        """
+        with self.__open_read() as read:
+            return read.getparams()
+
     def get_frames(self):
         """ フレーム数を返す
         :return: フレーム数
@@ -31,7 +39,7 @@ class WaveOperator(object):
         with self.__open_read() as read:
             return read.getnframes()
 
-    def get_2ch(self):
+    def read_2ch_wave(self):
         """ 2ch信号を数値リストで取得する
         :return 2ch信号
         """
@@ -39,12 +47,12 @@ class WaveOperator(object):
             if read.getnchannels() != 2:
                 raise ValueError("No 2ch Wave!")
 
-            data = self.__get_wave(read)
-            left = data[0::2]
-            right = data[1::2]
+            wave = self.__get_wave(read)
+            left = wave[0::2]
+            right = wave[1::2]
             return left, right
 
-    def get_1ch(self):
+    def read_1ch_wave(self):
         """ 1ch信号を数値リストで取得する
         :return 1ch信号
         """
@@ -64,7 +72,7 @@ class WaveOperator(object):
         return data
 
     def __open_read(self):
-        """ waveファイルオープン
+        """ waveファイル読み込みオープン
         :return
         """
-        return wave.open(self.file_name, "rb")
+        return wave.open(self.filename, "rb")
