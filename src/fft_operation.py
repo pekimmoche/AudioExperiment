@@ -23,4 +23,3 @@ class FftOperation(object):
         :return: FFT結果
         """
         return [math.sqrt(result.real * result.real + result.imag * result.imag) for result in np.fft.fft(data, fft_num)]
-
