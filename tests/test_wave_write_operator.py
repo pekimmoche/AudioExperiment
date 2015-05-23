@@ -16,7 +16,7 @@ class TestWaveWriteOperator(TestCase):
         input_params = self.wave_input_read.get_parameters()
         input_left, input_right = self.wave_input_read.read_2ch_wave()
 
-        self.wave_write.write_2ch_wave(input_left, len(input_left), input_right, len(input_right))
+        self.wave_write.write_2ch_wave(input_left, input_right, len(input_right))
         output_params = self.wave_output_read.get_parameters()
         output_left, output_right = self.wave_output_read.read_2ch_wave()
 

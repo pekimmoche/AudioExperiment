@@ -17,5 +17,5 @@ class WaveGenerator(object):
         """
 
         omega = 2 * freq * math.pi
-        theta = 2 * phase / 360 * math.pi
+        theta = 2 * phase * math.pi / 360
         return [amp * math.sin(omega * n / SAMPLING_FREQ + theta) for n in range(length)]

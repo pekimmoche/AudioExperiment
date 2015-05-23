@@ -1,5 +1,7 @@
 import math
+
 import numpy as np
+
 
 class FftOperation(object):
     """
@@ -16,10 +18,17 @@ class FftOperation(object):
         return np.fft.fft(data, fft_num)
 
     @staticmethod
-    def generate_energy_spectrum(data, fft_num):
+    def ifft(spectrum, fft_num):
+        """ IFFTを行う
+        :param spectrum:スペクトルデータ
+        :return: IFFT結果
+        """
+        return [complex_num.real for complex_num in np.fft.ifft(spectrum, fft_num)]
+
+    @staticmethod
+    def generate_power_spectrum(spectrum):
         """ エネルギースペクトラムを生成する
-        :param data: データ
-        :param fft_num: FFT点数
+        :param スペクトルデータ
         :return: FFT結果
         """
-        return [math.sqrt(result.real * result.real + result.imag * result.imag) for result in np.fft.fft(data, fft_num)]
+        return [math.sqrt(result.real * result.real + result.imag * result.imag) for result in spectrum]

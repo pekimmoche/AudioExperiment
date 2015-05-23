@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
-import numpy as np
 
+from fft_operation import FftOperation
 from wave_read_operator import WaveReadOperator
 from wave_write_operator import WaveWriteOperator
 from window_function import WindowFunction
@@ -12,6 +12,7 @@ class WaveManipulatorByFft(object):
 
     def __init__(self):
         self.window = WindowFunction()
+        self.fft_ope = FftOperation()
 
     @staticmethod
     def init_result(length):
@@ -21,30 +22,36 @@ class WaveManipulatorByFft(object):
         zero_list = [0 for i in range(length)]
         return zero_list, zero_list
 
-    def do(self, wave, result, index, num):
+    def roop_with_index(self, wave, result, index, length, fft_num):
         """
-        :param wave: 元データ
+        :param wave: 波形データ
         :param result: 結果
         :param index: インデックス
-        :param num: 処理点数
+        :param length: データ長
+        :param fft_num: FFT点数
         """
-        # 3, FFTの処理
-        # 4, 作業
-        # 5, IFFTの処理
+        spectrum = self.fft_ope.fft(wave, fft_num)
 
-        # 6, Hann窓をかけて、足し合わせる
-        self.__multiplying_hann_with_wave_and_add_to_result(wave, result, index, num)
+        # メイン処理
+        spectrum_result = self.__do_it(spectrum[:])
 
-    def __multiplying_hann_with_wave_and_add_to_result(self, wave, result, index, num):
+        wave_result = self.fft_ope.ifft(spectrum_result, fft_num)
+        self.__multiplying_hann_with_wave_and_add_to_result(wave_result, result, index, length)
+
+    def __do_it(self, spectrum):
+        power_spectrum = self.fft_ope.generate_power_spectrum(spectrum)
+        return spectrum
+
+    def __multiplying_hann_with_wave_and_add_to_result(self, wave, result, index, length):
         """ Hann窓をかけて、足し合わせる
         :param wave: 波形
         :param result: 出力結果
         :param index: インデックス
-        :param num: データ点数
+        :param length: データ長
         :return:
         """
-        hann = self.window.hann_window(num)
-        wave = self.window.multiplying_window(wave, hann, num)
+        hann = self.window.hann_window(length)
+        wave = self.window.multiplying_window(wave, hann, length)
         for i, v in enumerate(wave):
             result[index + i] += v
 
@@ -69,24 +76,14 @@ class WaveManipulatorByFft(object):
         wave = WaveWriteOperator(filename)
         wave.write_2ch_wave(left, right, length)
 
-    def __plot_wave(self, wave, wave_length, num):
-        """ 波形をグラフにする
-        :param wave: データ
-        :param data: データ点数
-        :param num: 個数
-        """
-        normal_data = wave / 32768
-        self.__plot(wave, wave_length)
-        self.__plot(normal_data[:num], num)
-
     @staticmethod
-    def __plot(wave, wave_length):
+    def __plot(data, length):
         """ データをグラフにする
-        :param wave: データ
-        :param data: データ点数
+        :param data: データ
+        :param length: データ長
         :return:
         """
-        x = np.arange(0, wave_length, 1)
-        y = wave
+        x = range(0, length)
+        y = data
         plt.plot(x, y)
         plt.show()

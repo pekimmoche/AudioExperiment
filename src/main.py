@@ -18,20 +18,10 @@ if __name__ == '__main__':
     # 2, wave をフレームごとに切り取ってループ
     for i in range(0, wave_length - data_length, shift_num):
         left_tmp = left[i:i + data_length]
-        manipulator.do(left_tmp, left_result, i, data_length)
+        manipulator.roop_with_index(left_tmp, left_result, i, data_length, fft_num)
 
         # right_tmp = right[i:i + data_length]
         # manipulator.do(right_tmp, right_result, i, data_length)
-
-
-    # for i in range(1000):
-    #     energy_spectrum = FftOperation.generate_energy_spectrum(data, num)
-    # end = time.time()
-
-
-    for i, v in enumerate(left):
-        print(i, v, int(round(left_result[i])), v - int(round(left_result[i])))
-        if (i > 1026): break
 
     # 7, 出力結果をwaveに出力
     manipulator.write_2ch_wave(output_filename, left_result, left_result, wave_length)

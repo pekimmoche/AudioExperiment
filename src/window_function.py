@@ -9,14 +9,16 @@ class WindowFunction(object):
     @staticmethod
     def hann_window(length):
         """ ハン窓を返す
-        w(x) = 0.5 - 0.5 \cos 2 \pi x
+        w(x) = 0.5 - 0.5 \cos 2 \pi x (0 <= x <= 1)
+        0 の時に0、 lengthの時に1となる。
+        hann[i] + hann[i+length/2] = 1 が保証される
         :param length: 長さ
         :return: ハン窓
         """
         w = []
-        length2 = length - 1
-        for i in range(0, length):
-            w.append(0.5 * (1 - math.cos(2 * i * math.pi / length2)))
+        for i in range(length):
+            x = i / length
+            w.append(0.5 - 0.5 * math.cos(2 * math.pi * x))
         return w
 
     @staticmethod
