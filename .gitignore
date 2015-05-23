@@ -58,3 +58,6 @@ target/
 
 # intelliJ
 .idea/
+
+#wave
+*.wav

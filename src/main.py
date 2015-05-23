@@ -8,39 +8,31 @@ if __name__ == '__main__':
 
     # 1, ファイルから読み込み
     left, right = manipulator.read_wave(input_filename)
+    wave_length = len(left)
+    left_result, right_result = manipulator.init_result(wave_length)
+
+    data_length = 1024
+    fft_num = 1024
+    shift_num = int(data_length / 2)
 
     # 2, wave をフレームごとに切り取ってループ
-    data_num = 1024
-    fft_num = 1024
-    shift_num = int(data_num / 2)
+    for i in range(0, wave_length - data_length, shift_num):
+        left_tmp = left[i:i + data_length]
+        manipulator.do(left_tmp, left_result, i, data_length)
 
-    # 終了条件は、
-    for i in range(0, len(left) - data_num, shift_num):
-        print(i, i + data_num)
+        # right_tmp = right[i:i + data_length]
+        # manipulator.do(right_tmp, right_result, i, data_length)
 
-
-    print("left_len", len(left))
-
-    # 0 1024
-    # 512 512+1024
-    # 1024 0+1024
-    #
-    # data_num
-    #
-    # data = left[:search_length]
-
-    # 3, FFTの処理
-    # 4, 作業
-    # 5, IFFTの処理
-    # 6, Hann窓をかける
-    # 7, 出力結果に足し算
-
-    out_left = left
-    out_right = right
 
     # for i in range(1000):
     #     energy_spectrum = FftOperation.generate_energy_spectrum(data, num)
     # end = time.time()
 
-    # 8, 出力結果をwaveに出力
-    manipulator.write_2ch_wave(output_filename, left, right)
+
+    for i, v in enumerate(left):
+        print(i, v, int(round(left_result[i])), v - int(round(left_result[i])))
+        if (i > 1026): break
+
+    # 7, 出力結果をwaveに出力
+    manipulator.write_2ch_wave(output_filename, left_result, left_result, wave_length)
+    # manipulator.write_2ch_wave(output_filename, left_result, right_result, wave_length)
