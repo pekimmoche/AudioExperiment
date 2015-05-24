@@ -11,7 +11,6 @@ class TestWindowFunction(TestCase):
 
     def test_hann_window(self):
         hann = self.window.hann_window(10)
-        self.__plot(hann, 10)
         result = self.window.multiplying_window([10, 10, 10, 10, 10, 10, 10, 10, 10, 10], hann, 10)
         ideal = [0, 0.9549150281252627, 3.4549150281252627, 6.545084971874737, 9.045084971874736, 10.0,
                  9.045084971874736, 6.545084971874737, 3.4549150281252636, 0.9549150281252633]

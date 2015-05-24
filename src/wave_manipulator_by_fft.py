@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 
 from fft_operation import FftOperation
+from squeeze_spectrum_by_select_local_maximum import SqueezeSpectrumFromSelectLocalMaximum
 from wave_read_operator import WaveReadOperator
 from wave_write_operator import WaveWriteOperator
 from window_function import WindowFunction
@@ -13,6 +14,7 @@ class WaveManipulatorByFft(object):
     def __init__(self):
         self.window = WindowFunction()
         self.fft_ope = FftOperation()
+        self.squeeze = SqueezeSpectrumFromSelectLocalMaximum()
 
     @staticmethod
     def init_result(length):
@@ -22,24 +24,29 @@ class WaveManipulatorByFft(object):
         zero_list = [0 for i in range(length)]
         return zero_list, zero_list
 
-    def roop_with_index(self, wave, result, index, length, fft_num):
+    def roop_with_index(self, wave, result, index, length, fft_num, options):
         """
         :param wave: 波形データ
         :param result: 結果
         :param index: インデックス
         :param length: データ長
         :param fft_num: FFT点数
+        :param options: メイン加工処理に使う変数群
         """
         spectrum = self.fft_ope.fft(wave, fft_num)
 
         # メイン処理
-        spectrum_result = self.__do_it(spectrum[:])
+        spectrum_result = self.__do_it(spectrum[:], fft_num, options)
 
         wave_result = self.fft_ope.ifft(spectrum_result, fft_num)
         self.__multiplying_hann_with_wave_and_add_to_result(wave_result, result, index, length)
 
-    def __do_it(self, spectrum):
+    def __do_it(self, spectrum, fft_num, options):
+        search_spectrum_num = options["search_spectrum_num"]
         power_spectrum = self.fft_ope.generate_power_spectrum(spectrum)
+
+        # 極大点を洗い出す
+        self.squeeze.get_local_max_or_normal_max(power_spectrum, search_spectrum_num)
         return spectrum
 
     def __multiplying_hann_with_wave_and_add_to_result(self, wave, result, index, length):
