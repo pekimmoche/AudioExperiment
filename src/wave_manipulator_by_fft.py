@@ -1,3 +1,5 @@
+import math
+
 from matplotlib import pyplot as plt
 
 from fft_operation import FftOperation
@@ -10,6 +12,8 @@ from window_function import WindowFunction
 class WaveManipulatorByFft(object):
     """ FFTを用いて、Wave波形を加工するクラス
     """
+
+    MAX_16BIT_AMP = 32767
 
     def __init__(self):
         self.window = WindowFunction()
@@ -34,20 +38,31 @@ class WaveManipulatorByFft(object):
         :param options: メイン加工処理に使う変数群
         """
         spectrum = self.fft_ope.fft(wave, fft_num)
-
-        # メイン処理
-        spectrum_result = self.__do_it(spectrum[:], fft_num, options)
-
+        spectrum_result = self.__manipulate_spectrum(spectrum[:], fft_num, options)
         wave_result = self.fft_ope.ifft(spectrum_result, fft_num)
         self.__multiplying_hann_with_wave_and_add_to_result(wave_result, result, index, length)
 
-    def __do_it(self, spectrum, fft_num, options):
-        search_spectrum_num = options["search_spectrum_num"]
+    def __manipulate_spectrum(self, spectrum, fft_num, options):
+        """ スペクトルデータを加工する
+        TODO: コールバック関数にしよう
+        :param spectrum: スペクトルデータ
+        :param fft_num: FFT点数
+        :param options: 加工処理に使う変数群
+        :return:
+        """
+        search_spectrum_num = 2 * options["search_spectrum_num"]  # スペクトルは左右対称なので二倍
         power_spectrum = self.fft_ope.generate_power_spectrum(spectrum)
 
-        # 極大点を洗い出す
-        self.squeeze.get_local_max_or_normal_max(power_spectrum, search_spectrum_num)
-        return spectrum
+        # 極大点を洗い出して、その値だけ取り出す
+        # 99.9%は該当しないので、先端処理を楽するために一旦 0 と fft_num/2 の値は0化して省略する
+        power_spectrum[0] = 0
+        power_spectrum[int(fft_num / 2)] = 0
+        local_maximum_list = self.squeeze.get_local_maximum_list_only_num(power_spectrum, search_spectrum_num)
+
+        spectrum_result = [0 for n in range(fft_num)]
+        for local_maximum in local_maximum_list:
+            spectrum_result[local_maximum[0]] = local_maximum[1]
+        return spectrum_result
 
     def __multiplying_hann_with_wave_and_add_to_result(self, wave, result, index, length):
         """ Hann窓をかけて、足し合わせる
@@ -82,6 +97,22 @@ class WaveManipulatorByFft(object):
         """
         wave = WaveWriteOperator(filename)
         wave.write_2ch_wave(left, right, length)
+
+    def adjust_16bit_by_overflow_wave(self, left, right):
+        """ 16bitオーバーしてる音源を、16bit範囲内に抑える
+        :param left: 左音源
+        :param right: 右音源
+        :return:
+        """
+        result = [math.fabs(w) for w in left] + [math.fabs(w) for w in right]
+        adjust_ratio = max(result) / self.MAX_16BIT_AMP
+        if adjust_ratio > 1:
+            left_result = [w/adjust_ratio for w in left]
+            right_result = [w/adjust_ratio for w in right]
+        else:
+            left_result = left
+            right_result = right
+        return left_result, right_result
 
     @staticmethod
     def __plot(data, length):
