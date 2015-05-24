@@ -61,3 +61,5 @@ target/
 
 #wave
 *.wav
+*.mp3
+*.aac
