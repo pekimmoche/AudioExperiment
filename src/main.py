@@ -5,19 +5,23 @@ if __name__ == '__main__':
     # input_filename = "../data/sample.wav"
     # output_filename = "../data/out.wav"
 
-    # input_filename = "../data/title.wav"
-    # output_filename = "../data/title_out.wav"
-
     manipulator = WaveManipulatorByFft()
-    data_length = 4096
-    fft_num = 4096
+    data_length = 2048
+    fft_num = 2048
     shift_num = int(data_length / 2)
-    options = {"search_spectrum_num": 40}
+    options = {"search_spectrum_num": 10}
+
+    # input_filename = "../data/title.wav"
+    # output_filename = "../data/title_out_" + str(data_length) + "_" + str(options["search_spectrum_num"]) + ".wav"
 
     input_filename = "../data/RisingHope.wav"
     output_filename = "../data/RisingHope_out_" + str(data_length) + "_" + str(options["search_spectrum_num"]) + ".wav"
 
+    # input_filename = "../data/L.Miranic.wav"
+    # output_filename = "../data/L.MiranicRisingHope" + str(data_length) + "_" + str(options["search_spectrum_num"]) + ".wav"
 
+
+    print("length=", data_length, "search_spectrum_num", options["search_spectrum_num"])
     print("reading start")
     left, right = manipulator.read_wave(input_filename)
     wave_length = len(left)

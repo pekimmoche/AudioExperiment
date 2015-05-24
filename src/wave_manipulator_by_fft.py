@@ -61,7 +61,7 @@ class WaveManipulatorByFft(object):
 
         spectrum_result = [0 for n in range(fft_num)]
         for local_maximum in local_maximum_list:
-            spectrum_result[local_maximum[0]] = local_maximum[1]
+            spectrum_result[local_maximum[0]] = spectrum[local_maximum[0]]
         return spectrum_result
 
     def __multiplying_hann_with_wave_and_add_to_result(self, wave, result, index, length):
